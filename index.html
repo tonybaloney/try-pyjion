@@ -29,6 +29,7 @@
       </nav>
     <div class="row">
         <div class="col">
+            <h2>Python code</h2>
         <textarea id="code" name="code">
 a = 2
 b = 3.0
@@ -48,11 +49,14 @@ x = 1234567890.0 * (10.0 ** i)
     <button onclick="compile()" >Compile</button>
     </div>
     <div class="col">
+        <h2>Intel x86-64 Assembly</h2>
         <pre class="assembly"><code id="native" class="x86asm">
             Click compile to see assembly data
         </code></pre>
     </div>
     <div class="col">
+        <h2>ECMA 335 CIL</h2>
+        <a href="https://github.com/tonybaloney/ecma-335/tree/master/docs" >CIL reference</a><br/>
         <pre class="assembly"><code id="cil" class="x86asm">
             Click compile to see assembly data
         </code></pre>
@@ -60,6 +64,7 @@ x = 1234567890.0 * (10.0 ** i)
 </div>
 <div class="row">
     <div class="col">
+        <h2>Python instruction graph</h2>
         <div id="graph" style="text-align: center; overflow: auto;"></div>
     </div>
 </div>
