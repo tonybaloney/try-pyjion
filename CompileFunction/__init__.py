@@ -8,30 +8,33 @@ import azure.functions as func
 import pyjion
 import pyjion.dis
 
-ALLOWED_IMPORTS = [
-    'pygments.lexers.asm',
-    'pygments.lexer',
-    'pygments.filter',
-    'pygments.filters',
-    'pygments.regexopt',
-    'pygments.lexers.c_cpp',
-    'pygments.lexers.d',
-]
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
     result = {}
-
+    BLOCKED_EVENTS = [
+        'import',
+        'imaplib.send',
+        'ftplib.connect',
+        'ftplib.sendcmd',
+        'open',
+        'os.chmod',
+        'os.chown',
+        'os.exec',
+        'os.fork',
+        'os.remove',
+        'os.rmdir',
+        'os.spawn',
+        'os.system',
+        'smtplib.connect',
+        'socket.connect',
+        'subprocess.Popen',
+        'webbrowser.open',
+        'urllib.Request'
+    ]
     def block_imports(event, args):
-        if event in ['import']:
-            if args[0] not in ALLOWED_IMPORTS:
-                raise ValueError("Imports not supported.")
-
-    # Import stuff now.
-    def f():
-        a = 1
-    f() ; f();
-    pyjion.dis.dis_native(f, True)
+        if event in BLOCKED_EVENTS:
+            raise ValueError("Code not allowed.")
 
     pyjion.enable()
     pyjion.enable_pgc()
@@ -40,10 +43,11 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     try:
         sys.addaudithook(block_imports)
         co = compile(req.get_body(), 'demo.py', 'exec')
-        exec(co) # run the code once
+        exec(co, {}, {}) # run the code once
         result['compile_result1'] = pyjion.info(co)
-        exec(co) # run the code again with profile data
+        exec(co, {}, {}) # run the code again with profile data
         result['compile_result2'] = pyjion.info(co)
+        BLOCKED_EVENTS = []
     except Exception as ex:
         return func.HttpResponse(
             str(ex),
