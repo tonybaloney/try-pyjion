@@ -79,7 +79,7 @@ x = 1234567890.0 * (10.0 ** i)
         });
         function compile(){
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "http://localhost:7071/api/CompileFunction", true);
+            xhr.open("POST", "https://try-pyjion.azurewebsites.net/api/CompileFunction", true);
             xhr.send(document.getElementById("code").innerText);
             xhr.onload = function() {
                 console.log(this.responseText);
