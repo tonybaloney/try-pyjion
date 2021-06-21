@@ -2,3 +2,12 @@
     max-height: 800px;
     overflow: auto;
 }
+
+body {
+    background-color: #2B2B2B;
+    color: light-grey;
+}
+
+.CodeMirror {
+    min-height: 700px;
+}

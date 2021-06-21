@@ -14,18 +14,26 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     pyjion.enable()
     pyjion.enable_pgc()
     pyjion.enable_graphs()
-    co = compile(req.get_body(), 'demo.py', 'exec')
-    exec(co) # run the code once
-    result['compile_result1'] = pyjion.info(co)
-    exec(co) # run the code again with profile data
-    result['compile_result2'] = pyjion.info(co)
+
+    try:
+        co = compile(req.get_body(), 'demo.py', 'exec')
+        exec(co) # run the code once
+        result['compile_result1'] = pyjion.info(co)
+        exec(co) # run the code again with profile data
+        result['compile_result2'] = pyjion.info(co)
+    except Exception as ex:
+        return func.HttpResponse(
+            str(ex),
+            status_code=500
+        )
+
     pyjion.disable()
     result['graph'] = pyjion.get_graph(co)
     dis_cil = io.StringIO()
     with contextlib.redirect_stdout(dis_cil):
         pyjion.dis.dis(co, True)
     result['dis_cil'] = dis_cil.getvalue()
-
+    result['offsets'] = pyjion.get_offsets(co)
     dis_x64 = io.StringIO()
     with contextlib.redirect_stdout(dis_x64):
         pyjion.dis.dis_native(co, True)

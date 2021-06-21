@@ -1,36 +1,81 @@
 <html>
-<head>
-    <link rel="stylesheet" href="web/style.css">
-    <link rel="stylesheet" href="web/ext/fontawesome/css/all.min.css">
+  <head>
+    <link rel="stylesheet" href="web/style.css" />
+    <link rel="stylesheet" href="web/ext/fontawesome/css/all.min.css" />
 
-    <link rel="stylesheet" href="web/ext/bootstrap-4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="web/ext/bootstrap-4/css/bootstrap.min-2.css" />
 
+    <!-- Code editor -->
     <script src="web/ext/codemirror.js"></script>
-    <link rel="stylesheet" href="web/ext/codemirror.css">
+    <link rel="stylesheet" href="web/ext/codemirror.css" />
+    <link rel="stylesheet" href="web/ext/darcula.css" />
     <script src="web/ext/python.js"></script>
-    <link rel="stylesheet" href="web/ext/highlight/styles/default.min.css">
+
+    <link rel="stylesheet" href="web/ext/highlight/styles/default.min.css" />
     <script src="web/ext/highlight/highlight.min.js"></script>
-    <script charset="UTF-8" src="web/ext/highlight/languages/x86asm.min.js"></script>
-    <script charset="UTF-8" src="web/ext/highlight/languages/python.min.js"></script>
+    <script
+      charset="UTF-8"
+      src="web/ext/highlight/languages/x86asm.min.js"
+    ></script>
+    <script
+      charset="UTF-8"
+      src="web/ext/highlight/languages/python.min.js"
+    ></script>
 
     <script src="//d3js.org/d3.v5.min.js"></script>
     <script src="https://unpkg.com/@hpcc-js/wasm@0.3.11/dist/index.min.js"></script>
     <script src="https://unpkg.com/d3-graphviz@3.0.5/build/d3-graphviz.js"></script>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary" style="margin-bottom:15px;">
+      <a class="navbar-brand" href="https://pyjion.readthedocs.io" style="padding-left: 40px;">
+        <img
+          src="web/pyjion_logo.png"
+          height="30"
+          class="d-inline-block align-top"
+          alt=""
+        />
+      </a>
 
-</head>
-<body class="container-fluid">
-    <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand" href="#">
-          <img src="web/pyjion_logo.png" height="30" class="d-inline-block align-top" alt="">
-        </a>
-        <span class="navbar-text">
-            <i class="fas fa-bolt"></i> Powered by <a href="">Microsoft Azure Functions</a>.
-          </span>
-      </nav>
-    <div class="row">
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="https://pyjion.readthedocs.io"
+          >Documentation</a
+        >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://github.com/tonybaloney/pyjion"
+            >Source Code</a
+          >
+          </li>
+        </ul>
+      </div>
+
+      <span class="navbar-text" style="padding-right: 40px;">
+        <i class="fas fa-bolt"></i> Powered by
+        <a
+          href="https://azure.microsoft.com/services/functions/?WT.mc_id=python-00000-anthonyshaw"
+          >Microsoft Azure Functions</a
+        >
+        and
+        <a
+          href="https://azure.microsoft.com/services/app-service/static/?WT.mc_id=python-00000-anthonyshaw"
+          >Static Web Apps.</a
+        >
+      </span>
+    </nav>
+    <div class="container-fluid">
+      <div class="row" style="margin-bottom:15px;">
         <div class="col">
-            <h2>Python code</h2>
-        <textarea id="code" name="code">
+          <h2><i class="fab fa-python"></i> Python code <button
+            type="button"
+            class="btn btn-primary btn-sm float-right"
+            onclick="compile()"
+          >
+            Compile <i class="fas fa-play"></i>
+          </button></h2>
+          <textarea id="code" name="code">
 a = 2
 b = 3.0
 c = 4.0
@@ -45,53 +90,71 @@ i = 0
 x = 1234567890.0 * (10.0 ** i)
 i = 10
 x = 1234567890.0 * (10.0 ** i)
-    </textarea>
-    <button onclick="compile()" >Compile</button>
-    </div>
-    <div class="col">
-        <h2>Intel x86-64 Assembly</h2>
-        <pre class="assembly"><code id="native" class="x86asm">
+</textarea
+          >
+          <div class="alert alert-danger" role="alert">
+          </div>
+        </div>
+        <div class="col">
+          <h2><i class="fas fa-microchip"></i> Intel x86-64 Assembly</h2>
+          <pre class="assembly"><code id="native" class="x86asm">
             Click compile to see assembly data
         </code></pre>
-    </div>
-    <div class="col">
-        <h2>ECMA 335 CIL</h2>
-        <a href="https://github.com/tonybaloney/ecma-335/tree/master/docs" >CIL reference</a><br/>
-        <pre class="assembly"><code id="cil" class="x86asm">
+        </div>
+        <div class="col">
+          <h2>
+            <i class="fas fa-microchip"></i> ECMA 335 CIL
+            <a href="https://github.com/tonybaloney/ecma-335/tree/master/docs"
+              >Docs</a>
+          </h2>
+          <pre class="assembly"><code id="cil" class="x86asm">
             Click compile to see assembly data
         </code></pre>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <h2>
+            <i class="fas fa-project-diagram"></i> Python instruction graph
+          </h2>
+          <div id="graph" style="text-align: center; overflow: auto"></div>
+        </div>
+      </div>
     </div>
-</div>
-<div class="row">
-    <div class="col">
-        <h2>Python instruction graph</h2>
-        <div id="graph" style="text-align: center; overflow: auto;"></div>
-    </div>
-</div>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-            mode: {name: "python",
-                    version: 3,
-                    singleLineStringErrors: false},
-            lineNumbers: true,
-            indentUnit: 4,
-            matchBrackets: true
-        });
-        function compile(){
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "https://try-pyjion.azurewebsites.net/api/CompileFunction", true);
-            xhr.send(document.getElementById("code").innerText);
-            xhr.onload = function() {
-                console.log(this.responseText);
-                var data = JSON.parse(this.responseText);
-                document.getElementById("native").innerText = data['dis_x64'];
-                hljs.highlightElement(document.getElementById("native"));
-                document.getElementById("cil").innerText = data['dis_cil'];
-                hljs.highlightElement(document.getElementById("cil"));
-                d3.select("#graph").graphviz().renderDot(data['graph']);
-            }
-        }
-    </script>
-</body>
-</html>
+      var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        mode: { name: "python", version: 3, singleLineStringErrors: false },
+        lineNumbers: true,
+        indentUnit: 4,
+        matchBrackets: true,
+        theme: "darcula",
+      });
+      function compile() {
+        var xhr = new XMLHttpRequest();
+        xhr.open(
+          "POST",
+          "http://localhost:7071/api/CompileFunction",
+          true
+        );
+        xhr.send(editor.getValue());
+        xhr.onload = function () {
+          console.log(this.status);
 
+          if (this.status != 200){
+            document.getElementById("error").style.display = 'block';
+            document.getElementById("error").innerText = this.responseText;
+          } else {
+            document.getElementById("error").style.display = 'none';
+          }
+
+          var data = JSON.parse(this.responseText);
+          document.getElementById("native").innerText = data["dis_x64"];
+          hljs.highlightElement(document.getElementById("native"));
+          document.getElementById("cil").innerText = data["dis_cil"];
+          hljs.highlightElement(document.getElementById("cil"));
+          d3.select("#graph").graphviz().renderDot(data["graph"]);
+        };
+      }
+    </script>
+  </body>
+</html>
