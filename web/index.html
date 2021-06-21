@@ -1,0 +1,22 @@
+<html>
+<head>
+    <script src="ext/codemirror.js"></script>
+    <link rel="stylesheet" href="ext/codemirror.css">
+    <script src="ext/python.js"></script>
+</head>
+<body>
+    <div><textarea id="code" name="code"></textarea></div>
+
+    <script>
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+            mode: {name: "python",
+                    version: 3,
+                    singleLineStringErrors: false},
+            lineNumbers: true,
+            indentUnit: 4,
+            matchBrackets: true
+        });
+    </script>
+</body>
+</html>
+
