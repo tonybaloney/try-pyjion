@@ -13,13 +13,14 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     result = {}
     pyjion.enable()
     pyjion.enable_pgc()
+    pyjion.enable_graphs()
     co = compile(req.get_body(), 'demo.py', 'exec')
     exec(co)
     result['compile_result1'] = pyjion.info(co)
     exec(co)
     result['compile_result2'] = pyjion.info(co)
     pyjion.disable()
-
+    result['graph'] = pyjion.get_graph(co)
     dis_cil = io.StringIO()
     with contextlib.redirect_stdout(dis_cil):
         pyjion.dis.dis(co, True)
