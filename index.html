@@ -1,12 +1,68 @@
 <html>
 <head>
+    <link rel="stylesheet" href="web/style.css">
+    <link rel="stylesheet" href="web/ext/fontawesome/css/all.min.css">
+
+    <link rel="stylesheet" href="web/ext/bootstrap-4/css/bootstrap.min.css">
+
     <script src="web/ext/codemirror.js"></script>
     <link rel="stylesheet" href="web/ext/codemirror.css">
     <script src="web/ext/python.js"></script>
-</head>
-<body>
-    <div><textarea id="code" name="code"></textarea></div>
+    <link rel="stylesheet" href="web/ext/highlight/styles/default.min.css">
+    <script src="web/ext/highlight/highlight.min.js"></script>
+    <script charset="UTF-8" src="web/ext/highlight/languages/x86asm.min.js"></script>
+    <script charset="UTF-8" src="web/ext/highlight/languages/python.min.js"></script>
 
+    <script src="//d3js.org/d3.v5.min.js"></script>
+    <script src="https://unpkg.com/@hpcc-js/wasm@0.3.11/dist/index.min.js"></script>
+    <script src="https://unpkg.com/d3-graphviz@3.0.5/build/d3-graphviz.js"></script>
+
+</head>
+<body class="container-fluid">
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="#">
+          <img src="web/pyjion_logo.png" height="30" class="d-inline-block align-top" alt="">
+        </a>
+        <span class="navbar-text">
+            <i class="fas fa-bolt"></i> Powered by <a href="">Microsoft Azure Functions</a>.
+          </span>
+      </nav>
+    <div class="row">
+        <div class="col">
+        <textarea id="code" name="code">
+a = 2
+b = 3.0
+c = 4.0
+c += a * b
+c /= a + b
+c = 4.0
+c %= a % b
+
+i = -10
+x = 1234567890.0 * (10.0 ** i)
+i = 0
+x = 1234567890.0 * (10.0 ** i)
+i = 10
+x = 1234567890.0 * (10.0 ** i)
+    </textarea>
+    <button onclick="compile()" >Compile</button>
+    </div>
+    <div class="col">
+        <pre class="assembly"><code id="native" class="x86asm">
+            Click compile to see assembly data
+        </code></pre>
+    </div>
+    <div class="col">
+        <pre class="assembly"><code id="cil" class="x86asm">
+            Click compile to see assembly data
+        </code></pre>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <div id="graph" style="text-align: center; overflow: auto;"></div>
+    </div>
+</div>
     <script>
         var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
             mode: {name: "python",
@@ -16,6 +72,20 @@
             indentUnit: 4,
             matchBrackets: true
         });
+        function compile(){
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:7071/api/CompileFunction", true);
+            xhr.send(document.getElementById("code").innerText);
+            xhr.onload = function() {
+                console.log(this.responseText);
+                var data = JSON.parse(this.responseText);
+                document.getElementById("native").innerText = data['dis_x64'];
+                hljs.highlightElement(document.getElementById("native"));
+                document.getElementById("cil").innerText = data['dis_cil'];
+                hljs.highlightElement(document.getElementById("cil"));
+                d3.select("#graph").graphviz().renderDot(data['graph']);
+            }
+        }
     </script>
 </body>
 </html>
