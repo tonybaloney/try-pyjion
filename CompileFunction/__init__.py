@@ -25,7 +25,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     def block_imports(event, args):
         if event in ['import']:
             if args[0] not in ALLOWED_IMPORTS:
-                logging.info(args[0]) #raise ValueError("Imports not supported.")
+                raise ValueError("Imports not supported.")
 
     # Import stuff now.
     def f():
