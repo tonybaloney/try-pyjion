@@ -80,19 +80,9 @@ a = 2
 b = 3.0
 c = 4.0
 c += a * b
-c /= a + b
-c = 4.0
-c %= a % b
-
-i = -10
-x = 1234567890.0 * (10.0 ** i)
-i = 0
-x = 1234567890.0 * (10.0 ** i)
-i = 10
-x = 1234567890.0 * (10.0 ** i)
 </textarea
           >
-          <div class="alert alert-danger" role="alert">
+          <div id="error" class="alert alert-danger" role="alert" style="display: none;">
           </div>
         </div>
         <div class="col">
@@ -143,6 +133,7 @@ x = 1234567890.0 * (10.0 ** i)
           if (this.status != 200){
             document.getElementById("error").style.display = 'block';
             document.getElementById("error").innerText = this.responseText;
+            return;
           } else {
             document.getElementById("error").style.display = 'none';
           }
