@@ -39,6 +39,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     pyjion.enable()
     pyjion.enable_pgc()
     pyjion.enable_graphs()
+    pyjion.enable_debug()
 
     try:
         sys.addaudithook(block_imports)
