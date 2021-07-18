@@ -11,20 +11,11 @@
     <link rel="stylesheet" href="web/ext/darcula.css" />
     <script src="web/ext/python.js"></script>
 
-    <link rel="stylesheet" href="web/ext/highlight/styles/default.min.css" />
-    <link rel="stylesheet" href="web/ext/highlight/styles/monokai-sublime.min.css" />
-    <script src="web/ext/highlight/highlight.min.js"></script>
+    <link rel="stylesheet" href="web/ext/prism.css" />
+
     <script
       charset="UTF-8"
-      src="web/ext/highlight/languages/x86asm.min.js"
-    ></script>
-    <script
-      charset="UTF-8"
-      src="web/ext/highlight/languages/cil.js"
-    ></script>
-    <script
-      charset="UTF-8"
-      src="web/ext/highlight/languages/python.min.js"
+      src="web/ext/prism.js"
     ></script>
 
     <script src="//d3js.org/d3.v5.min.js"></script>
@@ -92,7 +83,7 @@ c += a * b
         </div>
         <div class="col">
           <h2><i class="fas fa-microchip"></i> Intel x86-64 Assembly</h2>
-          <pre class="assembly"><code id="native" class="x86asm">
+          <pre class="assembly line-numbers"><code id="native" class="language-nasm">
             Click compile to see assembly data
         </code></pre>
         </div>
@@ -102,7 +93,7 @@ c += a * b
             <a href="https://github.com/tonybaloney/ecma-335/tree/master/docs" target="_new"
               >Docs</a>
           </h2>
-          <pre class="assembly"><code id="cil" class="cil">
+          <pre class="assembly line-numbers"><code id="cil" class="language-cil">
             Click compile to see assembly data
         </code></pre>
         </div>
@@ -128,7 +119,8 @@ c += a * b
         var xhr = new XMLHttpRequest();
         xhr.open(
           "POST",
-          "https://try-pyjion.azurewebsites.net/api/CompileFunction",
+          "http://localhost:7071/api/CompileFunction",
+          //"https://try-pyjion.azurewebsites.net/api/CompileFunction",
           true
         );
         xhr.send(editor.getValue());
@@ -145,9 +137,9 @@ c += a * b
 
           var data = JSON.parse(this.responseText);
           document.getElementById("native").innerText = data["dis_x64"];
-          hljs.highlightElement(document.getElementById("native"));
           document.getElementById("cil").innerText = data["dis_cil"];
-          hljs.highlightElement(document.getElementById("cil"));
+          Prism.highlightAll();
+
           d3.select("#graph").graphviz().renderDot(data["graph"]);
         };
       }
