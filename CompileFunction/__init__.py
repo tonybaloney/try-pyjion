@@ -65,7 +65,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     dis_x64 = io.StringIO()
     with contextlib.redirect_stdout(dis_x64):
         pyjion.dis.dis_native(co, True, False)
-    result['dis_x64'] = dis_x64.getvalue().replace('\n\n', '\n').replace('\n; METHOD', ' ; METHOD')
+    result['dis_x64'] = dis_x64.getvalue()
     result['version'] = pyjion.__version__
     result['status'] = pyjion.status()
     return func.HttpResponse(
