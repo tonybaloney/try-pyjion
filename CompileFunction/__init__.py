@@ -45,9 +45,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         sys.addaudithook(block_imports)
         co = compile(req.get_body(), 'demo.py', 'exec')
         exec(co, {}, {}) # run the code once
-        result['compile_result1'] = pyjion.info(co)
         exec(co, {}, {}) # run the code again with profile data
-        result['compile_result2'] = pyjion.info(co)
         BLOCKED_EVENTS = []
     except Exception as ex:
         return func.HttpResponse(

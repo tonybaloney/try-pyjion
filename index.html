@@ -115,6 +115,11 @@ c += a * b
         matchBrackets: true,
         theme: "darcula",
       });
+      Prism.hooks.add('before-highlight', function (env)
+      {
+        env.code = env.element.innerText;
+      });
+
       function compile() {
         var xhr = new XMLHttpRequest();
         xhr.open(
