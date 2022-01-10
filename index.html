@@ -81,34 +81,7 @@
           <h2>
             <i class="fab fa-python"></i> Python code
           </h2>
-          <form>
-            <div class="form-row">
-            <div class="col-auto">
-              <label for="debug">Mode</label>
-              <select class="form-control" name="debug" id='debug-mode'>
-                <option value="1">Debug</option>
-                <option value="0" selected>Release</option>
-              </select>
-            </div>
-            <div class="col-auto">
-              <label for="level">Optimization Level</label>
-              <select class="form-control" name="level" id='opt-level'>
-                <option value="0">0</option>
-                <option value="1" selected>1</option>
-                <option value="2">2</option>
-              </select>
-            </div>
-              <div class="col-auto">
-              <button
-                type="button"
-                class="btn btn-primary btn-sm float-right"
-                onclick="compile()"
-              >
-                Compile <i class="fas fa-play"></i>
-              </button>
-            </div>
-            </div>
-          </form>
+          
           <textarea id="code" name="code">
 a = 2
 b = 3.0
@@ -116,6 +89,27 @@ c = 4.0
 c += a * b
 </textarea
           >
+          <form class="form-inline">
+              <label for="debug">Mode</label>
+              <select name="debug" id='debug-mode'>
+                <option value="1">Debug</option>
+                <option value="0" selected>Release</option>
+              </select>
+
+              <label for="level">Optimization Level</label>
+              <select name="level" id='opt-level'>
+                <option value="0">0</option>
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+              </select>
+              <button
+                type="button"
+                class="btn btn-primary btn-sm float-right"
+                onclick="compile()"
+              >
+                Compile <i class="fas fa-play"> </i>
+              </button>
+          </form>
           <div
             id="error"
             class="alert alert-danger"
