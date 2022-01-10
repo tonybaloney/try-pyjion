@@ -1,0 +1,6 @@
+pyjion
+flask
+flask-cors
+gunicorn
+rich<11.0
+distorm3

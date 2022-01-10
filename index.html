@@ -107,6 +107,14 @@ c += a * b
           <div id="graph" style="text-align: center; overflow: auto"></div>
         </div>
       </div>
+      <div class="row">
+        <div class="col">
+          <h2>
+            <i class="fas fa-project-diagram"></i> Control Flow Graph
+          </h2>
+          <div id="cfg" style="text-align: center; overflow: auto"></div>
+        </div>
+      </div>
     </div>
     <script>
       var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
@@ -125,7 +133,7 @@ c += a * b
         var xhr = new XMLHttpRequest();
         xhr.open(
           "POST",
-          "https://try-pyjion.azurewebsites.net/api/CompileFunction",
+          "https://pyjion-latest.azurewebsites.net/compile",
           true
         );
         xhr.send(editor.getValue());
@@ -146,6 +154,7 @@ c += a * b
           Prism.highlightAll();
 
           d3.select("#graph").graphviz().renderDot(data["graph"]);
+          d3.select("#cfg").graphviz().renderDot(data["cfg"]);
         };
       }
     </script>
