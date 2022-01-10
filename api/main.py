@@ -42,10 +42,10 @@ def main():
     def block_imports(event, args):
         if event in BLOCKED_EVENTS:
             raise ValueError(f"Code not allowed ({event} {args}).")
-    level = request.args.get('level')
-    if not level or int(level) not in [0, 1, 2]:
+    level = int(request.args.get('level', 1))
+    if level not in [0, 1, 2]:
         level = 1
-    debug  = bool(request.args.get('debug'))
+    debug  = bool(int(request.args.get('debug', 0)))
     pyjion.config(graph=True, level=level, debug=debug)
     pyjion.enable()
 
