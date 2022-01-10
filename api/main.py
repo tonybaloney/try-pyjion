@@ -51,9 +51,15 @@ def main():
 
     try:
         sys.addaudithook(block_imports)
-        co = compile(request.data, 'demo.py', 'exec')
-        exec(co, {}, {}) # run the code once
-        exec(co, {}, {}) # run the code again with profile data
+        co = compile(request.data, '<string>', 'exec')
+        k = {}
+        exec(co, k) # run the code once
+
+        if 'demo' in k:  # Hopefully the user didn't delete the function
+            co = k['demo'].__code__
+
+        exec(co) # run the code again with profile data
+        exec(co) # run the code again with profile data
         BLOCKED_EVENTS = []
     except Exception as ex:
         return (
