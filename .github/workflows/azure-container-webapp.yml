@@ -1,0 +1,40 @@
+name: Build and deploy Docker app to Azure
+
+on: push
+
+# CONFIGURATION
+# For help, go to https://github.com/Azure/Actions
+#
+# Set up the following secrets in your repository:
+#   AZURE_CREDENTIALS, REGISTRY_USERNAME, REGISTRY_PASSWORD, REGISTRY_URL
+# 2. Change these variables for your configuration:
+env:
+  AZURE_WEBAPP_NAME: pyjion-latest   # set this to your application's name
+  CONTAINER_REGISTRY: ${{ secrets.REGISTRY_URL }}  # set secret with Container Registry URL, example : xyz.azurecr.io 
+
+jobs:
+  build-and-deploy-to-dev:
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+    - uses: actions/checkout@master
+    - name: Azure authentication
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: ACR authentication
+      uses: azure/docker-login@v1
+      with:
+        login-server: ${{ env.CONTAINER_REGISTRY }}
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}    
+    - name: Docker Build & Push to ACR
+      run: |
+        docker build . -t ${{ env.CONTAINER_REGISTRY }}/trypyjion:${{ github.sha }}
+        docker push ${{ env.CONTAINER_REGISTRY }}/trypyjion:${{ github.sha }} 
+
+    - name: 'Deploy to Azure Web App for Container'
+      uses: azure/webapps-deploy@v2
+      with: 
+        app-name: ${{ env.AZURE_WEBAPP_NAME }} 
+        images: ${{ env.CONTAINER_REGISTRY }}/trypyjion:${{ github.sha }}
