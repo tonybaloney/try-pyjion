@@ -1,4 +1,4 @@
-pyjion==1.2.4
+pyjion==1.2.5
 flask
 flask-cors
 gunicorn

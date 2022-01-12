@@ -45,7 +45,9 @@ def main():
     level = int(request.args.get('level', 1))
     if level not in [0, 1, 2]:
         level = 1
-    debug  = bool(int(request.args.get('debug', 0)))
+    debug  = int(request.args.get('debug', 0))
+    if debug not in [0, 1, 2]:
+        debug = 0
     pyjion.config(graph=True, level=level, debug=debug)
     pyjion.enable()
 
