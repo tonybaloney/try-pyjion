@@ -3,4 +3,4 @@
 # Manually managing azure-functions-worker may cause unexpected issues
 
 azure-functions
-pyjion[dis]==1.0.0rc2
+pyjion[dis]==2.0.0
